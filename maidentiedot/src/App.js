@@ -22,13 +22,17 @@ const App = () => {
 		setSearch(event.target.value)
 	}
 
-	const filteredSearch = newSearch ? countries.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase())) : countries
+	const filteredSearch = newSearch ? countries.filter(person => 
+		person.name.toLowerCase().includes(newSearch.toLowerCase())) : countries
 
-	const allAvailable = filteredSearch.map(country => <div>{country.name}</div>)
+	const allAvailable = filteredSearch.map((country, index) =>
+		<div>{country.name} <button onClick={() => setSearch(country.name)}>show</button>
+	</div>)
+
 	if (filteredSearch.length > 10) {
 		return (
 		<div> 
-			<div>find country < input value={newSearch} onChange={handleSearch} /></div>
+			<div>find country < input value={newSearch} onChange={handleSearch}/></div>
 			<div>too many entries to show</div>
 		</div >)	
 	}
