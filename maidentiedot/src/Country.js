@@ -15,7 +15,7 @@ const Country = (props) => {
             })
     }
     useEffect(hook, [])
-    const allLanguages = props.filteredSearch[0].languages.map(language => <li>{language.name}</li>)
+    const allLanguages = props.filteredSearch[0].languages.map(language => <li key={language.name}>{language.name}</li>)
     return (
         <div>
             <h1>{props.filteredSearch[0].name}</h1>

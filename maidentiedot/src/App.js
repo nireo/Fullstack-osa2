@@ -26,7 +26,7 @@ const App = () => {
 		person.name.toLowerCase().includes(newSearch.toLowerCase())) : countries
 
 	const allAvailable = filteredSearch.map((country, index) =>
-		<div>{country.name} <button onClick={() => setSearch(country.name)}>show</button>
+		<div key={country.name}>{country.name} <button onClick={() => setSearch(country.name)}>show</button>
 	</div>)
 
 	if (filteredSearch.length > 10) {
