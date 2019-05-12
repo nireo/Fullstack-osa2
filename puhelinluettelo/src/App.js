@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Persons from "./Persons"
-import axios from "axios"
+import personService from './services/persons'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -8,19 +8,27 @@ const App = () => {
     const [newNumber, setNewNumber] = useState()
     const [exclusion, setExclusion] = useState('')
 
-    const hook = () => {
-        console.log('effect')
-        axios
-        .get('http://localhost:3001/persons')
-        .then(response => {
-            console.log('promise fulfilled')
-            console.log(response.data)
-            setPersons(response.data)
-        })
-    }
 
-    useEffect(hook, [])
-    console.log(hook)
+    // =============== OLD REQUEST ===============
+    // useEffect(() => {
+    //     axios
+    //         .get('http://localhost:3001/persons')
+    //         .then(response => {
+    //             console.log('promise fulfilled')
+    //             setPersons(response.data)
+    //         })
+    //         .catch(err => {
+    //             console.log(err)
+    //         })
+    // }, [])
+    
+    useEffect(() => {
+        personService
+            .getAll()
+            .then(initialPersons => {
+                setPersons(initialPersons)
+            })
+    }, [])
 
     const addPerson = (event) => {
         event.preventDefault()
@@ -29,25 +37,33 @@ const App = () => {
             alert(`${newName} löytyy jo`)
             setNewName('')
         } else {
-            console.log(newNumber)
-            setPersons(persons.concat({ name: newName, number: newNumber }))
+            const personObject = {
+                name: newName,
+                number: newNumber
+            }
+
+            setPersons(persons.concat(personObject))
             setNewName('')
             setNewNumber('')
+
+            personService
+                .create(personObject).then(returnedNote => {
+                    setPersons(persons.concat(returnedNote))
+                    setNewName('')
+                    setNewNumber('')
+                })
         }
     }
 
     const handleNameChange = (event) => {
-        console.log(event.target.value)
         setNewName(event.target.value)
     }
 
     const handleNumberChange = (event) => {
-        console.log(event.target.value)
         setNewNumber(event.target.value)
     }
 
     const handleExclusion = (event) => {
-        console.log(event.target.value)
         setExclusion(event.target.value)
     }
 

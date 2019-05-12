@@ -7,7 +7,6 @@ import Country from "./Country"
 const App = () => {
 	const [ countries, setCountries ] = useState([])
 	const [ newSearch, setSearch ] = useState("")
-
 	const hook = () => {
 		axios
 			.get('https://restcountries.eu/rest/v2/all')
@@ -15,7 +14,6 @@ const App = () => {
 				setCountries(response.data)
 			})
 	}
-
 	useEffect(hook, [])
 
 	const handleSearch = (event) => {
