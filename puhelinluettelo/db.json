@@ -1,11 +1,6 @@
 {
   "persons": [
     {
-      "name": "Martti Tienari",
-      "number": "124",
-      "id": 2
-    },
-    {
       "name": "Arto Järvinen",
       "number": "040-123456",
       "id": 3
@@ -14,6 +9,16 @@
       "name": "Lea Kutvonen",
       "number": "040-123456",
       "id": 4
+    },
+    {
+      "name": "Frederik Mannen",
+      "number": "1123-12512",
+      "id": 5
+    },
+    {
+      "name": "Sauli Niinistö",
+      "number": "040-1291259",
+      "id": 6
     }
   ]
 }

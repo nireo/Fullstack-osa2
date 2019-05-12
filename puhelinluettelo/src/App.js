@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Person from "./Persons"
 import personService from './services/persons'
+import Error from './services/error'
+import Success from './services/success'
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState()
     const [exclusion, setExclusion] = useState('')
-
-
-    // =============== OLD REQUEST ===============
-    // useEffect(() => {
-    //     axios
-    //         .get('http://localhost:3001/persons')
-    //         .then(response => {
-    //             console.log('promise fulfilled')
-    //             setPersons(response.data)
-    //         })
-    //         .catch(err => {
-    //             console.log(err)
-    //         })
-    // }, [])
-    // ===========================================
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [successMessage, setSuccessMessage] = useState(null)
     
     useEffect(() => {
         personService
@@ -37,38 +26,61 @@ const App = () => {
             name: newName,
             number: newNumber
         }
+
+        // check if user entered entry already exists in db
         const alreadyFound = persons.find(persons => persons.name === newName)
 
         if (alreadyFound) {
-            console.log(newName)
+            // confirm if user wants to replace the number of an already existing entry
             const wantToReplace = window.confirm(`${newName} löytyy jo, haluatko korvata nykyisen?`)
+
+            // code under executes if user agreed to replacing person
             if (wantToReplace) {
                 personService.update(alreadyFound.id, personObject).then(response => {
                     console.log(response)
-                    setPersons(persons.filter(p => p.name !== personObject.name).concat(response))
+                    setPersons(persons.filter(p => p.name !== personObject.name)
+                    .concat(response))
                     setNewName('')
                     setNewNumber('')
                 })
             }
         } else {
-            setPersons(persons.concat(personObject))
-            setNewName('')
-            setNewNumber('')
             personService
                 .create(personObject).then(returnedNote => {
+                    // add person to db.json
                     setPersons(persons.concat(returnedNote))
+
+                    // clear up fields
                     setNewName('')
                     setNewNumber('')
+
+                    // display add message
+                    setSuccessMessage(`${personObject.name} on lisätty`)
+                    setTimeout(() => {
+                        setSuccessMessage(null)
+                    }, 5000)
                 })
         }
     }
 
     const handleRemove = (id) => {
-        const deletedPerson = persons.find(person => person.name === person)
-        const accepted = window.confirm(`remove ${deletedPerson} are you sure?`)
+        // collect users selected object for deletion
+        const deletedPerson = persons.find(person => person.id === id)
+
+        // confirm deletion
+        const accepted = window.confirm(`remove ${deletedPerson.name} are you sure?`)
+
+        // code under executes if user agreed to deleting person entry
         if (accepted) {
-            personService.remove(id).then(response => {
-                setPersons(persons.filter(p => p.id !== id))
+            personService.remove(id).then(r => {
+                console.log(r)
+                setPersons(persons.filter(person => person.id !== id))
+            }).catch(err => { // if promise cannot be filled properly
+                setErrorMessage(`henkilö '${newName}' on jo poistettu palvelimelta`)
+                setTimeout(() => {
+                    setErrorMessage(null)
+                }, 5000)
+                setPersons(persons.filter(person => person.id !==id))
             })
         }
     }
@@ -90,6 +102,9 @@ const App = () => {
     return (
         <div>
             <h2>Puhelinluettelo</h2>
+            <Error message={errorMessage} />
+            <Success message={successMessage}/>
+            
             <form>
                 <div>
                     <form>
