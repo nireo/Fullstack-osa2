@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Persons from "./Persons"
+import Person from "./Persons"
 import personService from './services/persons'
 
 const App = () => {
@@ -21,6 +21,7 @@ const App = () => {
     //             console.log(err)
     //         })
     // }, [])
+    // ===========================================
     
     useEffect(() => {
         personService
@@ -32,26 +33,43 @@ const App = () => {
 
     const addPerson = (event) => {
         event.preventDefault()
-        if (persons.find(persons => persons.name === newName)) {
-            console.log(newName)
-            alert(`${newName} löytyy jo`)
-            setNewName('')
-        } else {
-            const personObject = {
-                name: newName,
-                number: newNumber
-            }
+        const personObject = {
+            name: newName,
+            number: newNumber
+        }
+        const alreadyFound = persons.find(persons => persons.name === newName)
 
+        if (alreadyFound) {
+            console.log(newName)
+            const wantToReplace = window.confirm(`${newName} löytyy jo, haluatko korvata nykyisen?`)
+            if (wantToReplace) {
+                personService.update(alreadyFound.id, personObject).then(response => {
+                    console.log(response)
+                    setPersons(persons.filter(p => p.name !== personObject.name).concat(response))
+                    setNewName('')
+                    setNewNumber('')
+                })
+            }
+        } else {
             setPersons(persons.concat(personObject))
             setNewName('')
             setNewNumber('')
-
             personService
                 .create(personObject).then(returnedNote => {
                     setPersons(persons.concat(returnedNote))
                     setNewName('')
                     setNewNumber('')
                 })
+        }
+    }
+
+    const handleRemove = (id) => {
+        const deletedPerson = persons.find(person => person.name === person)
+        const accepted = window.confirm(`remove ${deletedPerson} are you sure?`)
+        if (accepted) {
+            personService.remove(id).then(response => {
+                setPersons(persons.filter(p => p.id !== id))
+            })
         }
     }
 
@@ -87,7 +105,7 @@ const App = () => {
             </form>
             <h2>Numerot</h2>
             <div>
-                <Persons persons={filteredSearch} />
+                <Person persons={filteredSearch} remove={handleRemove} />
             </div>
         </div>
     )

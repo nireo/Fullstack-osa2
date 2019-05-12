@@ -1,13 +1,8 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
-    },
-    {
       "name": "Martti Tienari",
-      "number": "040-123456",
+      "number": "124",
       "id": 2
     },
     {
@@ -19,16 +14,6 @@
       "name": "Lea Kutvonen",
       "number": "040-123456",
       "id": 4
-    },
-    {
-      "name": "Pekka Raunio",
-      "number": "040-125125",
-      "id": 5
-    },
-    {
-      "name": "Sanna Lemminkö",
-      "number": "040-129581828",
-      "id": 6
     }
   ]
 }
