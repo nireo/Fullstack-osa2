@@ -5,12 +5,12 @@ import Error from './services/error'
 import Success from './services/success'
 
 const App = () => {
-    const [persons, setPersons] = useState([])
-    const [newName, setNewName] = useState('')
-    const [newNumber, setNewNumber] = useState()
-    const [exclusion, setExclusion] = useState('')
-    const [errorMessage, setErrorMessage] = useState(null)
-    const [successMessage, setSuccessMessage] = useState(null)
+    const [ persons, setPersons ] = useState([])
+    const [ newName, setNewName ] = useState('')
+    const [ newNumber, setNewNumber ] = useState()
+    const [ exclusion, setExclusion ] = useState('')
+    const [ errorMessage, setErrorMessage ] = useState(null)
+    const [ successMessage, setSuccessMessage ] = useState(null)
     
     useEffect(() => {
         personService
@@ -22,10 +22,9 @@ const App = () => {
 
     const addPerson = (event) => {
         event.preventDefault()
-        const personObject = {
-            name: newName,
-            number: newNumber
-        }
+
+        // object entry for person entries
+        const personObject = { name: newName, number: newNumber }
 
         // check if user entered entry already exists in db
         const alreadyFound = persons.find(persons => persons.name === newName)
@@ -47,19 +46,19 @@ const App = () => {
         } else {
             personService
                 .create(personObject).then(returnedNote => {
-                    // add person to db.json
-                    setPersons(persons.concat(returnedNote))
+                // add person to db.json
+                setPersons(persons.concat(returnedNote))
 
-                    // clear up fields
-                    setNewName('')
-                    setNewNumber('')
+                // clear up input fields
+                setNewName('')
+                setNewNumber('')
 
-                    // display add message
-                    setSuccessMessage(`${personObject.name} on lisätty`)
-                    setTimeout(() => {
-                        setSuccessMessage(null)
-                    }, 5000)
-                })
+                // display add message
+                setSuccessMessage(`${personObject.name} on lisätty`)
+                setTimeout(() => {
+                    setSuccessMessage(null)
+                }, 3000)
+            })
         }
     }
 
@@ -79,7 +78,7 @@ const App = () => {
                 setErrorMessage(`henkilö '${newName}' on jo poistettu palvelimelta`)
                 setTimeout(() => {
                     setErrorMessage(null)
-                }, 5000)
+                }, 3000)
                 setPersons(persons.filter(person => person.id !==id))
             })
         }
